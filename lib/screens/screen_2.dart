@@ -46,20 +46,25 @@ class _GridViewerState extends State<GridViewer> {
           },
         ),
       ),
-      body: Builder(builder: (context) {
-        return GridView.builder(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              childAspectRatio: 4 / 3,
-              mainAxisSpacing: 10,
-              crossAxisSpacing: 10),
-          itemCount: _users.length,
-          itemBuilder: (context, index) => ListCard(
-            username: _users[index].username,
-            email: _users[index].email,
-          ),
-        );
-      }),
+      body: _isLoading
+          ? Center(
+              child: CircularProgressIndicator(
+              color: PrimaryColor,
+            ))
+          : Builder(builder: (context) {
+              return GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: 4 / 3,
+                    mainAxisSpacing: 10,
+                    crossAxisSpacing: 10),
+                itemCount: _users.length,
+                itemBuilder: (context, index) => ListCard(
+                  username: _users[index].username,
+                  email: _users[index].email,
+                ),
+              );
+            }),
     );
   }
 }

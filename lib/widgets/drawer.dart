@@ -44,6 +44,7 @@ class _buildDrawerState extends State<buildDrawer> {
           ),
           InkWell(
             onTap: () {
+              
               Navigator.of(context).pushNamed('/screen2');
             },
             child: Container(
