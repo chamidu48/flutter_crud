@@ -22,6 +22,8 @@ class CustomTextField extends StatelessWidget {
           borderRadius: BorderRadius.circular(10), color: Colors.white),
       child: TextField(
         controller: controller,
+        style: TextStyle(color: PrimaryColor, fontSize: 14),
+        cursorColor: PrimaryColorDark,
         textAlignVertical: TextAlignVertical.center,
         decoration: InputDecoration(
             prefixIcon: Icon(

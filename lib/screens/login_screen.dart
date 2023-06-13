@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:user_crud/const/colors.dart';
 import 'package:user_crud/screens/register_screen.dart';
+import 'package:user_crud/services/user_controller.dart';
 
 import '../widgets/custom_button.dart';
 import '../widgets/custom_textfield.dart';
@@ -17,6 +18,8 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final UserController _userController = UserController();
+  bool _loading = false;
 
   @override
   void dispose() {
@@ -25,25 +28,43 @@ class _LoginScreenState extends State<LoginScreen> {
     _passwordController.dispose();
   }
 
+  Future<void> checkUser(
+      String username, String password, BuildContext context) async {
+    if (username.length > 0 && password.length > 0) {
+      setState(() {
+        _loading = true;
+      });
+      var hasUser =
+          await _userController.CheckUser(username, password, context);
+      if (hasUser == false) {
+        setState(() {
+          _loading = false;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-          child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: 220,
-            child: Image.asset('assets/images/login.png'),
-          ),
-          Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                color: PrimaryColor,
-              ),
-              child: Builder(builder: (context) {
-                return Padding(
+          child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              height: size.height * 0.4,
+              child: Image.asset('assets/images/login.png'),
+            ),
+            Container(
+                height: size.shortestSide,
+                decoration: BoxDecoration(
+                  color: PrimaryColor,
+                ),
+                child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 50),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -118,18 +139,29 @@ class _LoginScreenState extends State<LoginScreen> {
                         height: 20,
                       ),
                       CustomButton(
-                        text: 'Log in',
+                        child: _loading
+                            ? SizedBox(
+                                height: 15,
+                                width: 15,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : Text(
+                                'Login',
+                                style: TextStyle(color: Colors.white),
+                              ),
                         onPressed: () {
-                          Navigator.pushNamed(context, '/screen1');
+                          checkUser(_usernameController.text,
+                              _passwordController.text, context);
                         },
-                      )
+                      ),
                     ],
                   ),
-                );
-              }),
-            ),
-          )
-        ],
+                )),
+          ],
+        ),
       )),
     );
   }
